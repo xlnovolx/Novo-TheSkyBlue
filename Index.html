@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venta de Cuentas Streaming y Herramientas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0f0f0f; color:#eee; font-family:'Roboto', sans-serif; overflow-x:hidden; }
+    header {
+      background:linear-gradient(90deg, #4e00c2, #ff0057);
+      color:#fff; font-family:'Orbitron', sans-serif;
+      font-size:1.8rem; text-align:center; padding:1rem;
+      position:sticky; top:0; z-index:1000;
+      box-shadow:0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    /* --- Carrusel Full Width --- */
+    .carousel {
+      position:relative;
+      width:100vw;
+      height:450px;
+      margin:0;
+      overflow:hidden;
+      border-radius:0;
+    }
+    .carousel-track {
+      display:flex;
+      transition:transform 0.6s ease;
+      height:100%;
+    }
+    .carousel img {
+      width:100vw;
+      height:100%;
+      object-fit:cover;
+      flex-shrink:0;
+    }
+    .carousel-btn {
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:rgba(0,0,0,0.5);
+      border:none;
+      color:#fff;
+      font-size:2rem;
+      cursor:pointer;
+      padding:0.3rem 0.8rem;
+      border-radius:50%;
+      z-index:10;
+    }
+    .carousel-btn.prev { left:20px; }
+    .carousel-btn.next { right:20px; }
+
+    nav {
+      background:#1a1a1a; display:flex; justify-content:center; gap:1rem;
+      flex-wrap:wrap; padding:0.8rem; border-bottom:2px solid #ff0057;
+      position:sticky; top:64px; z-index:999;
+    }
+    nav button {
+      background:transparent; border:2px solid #ff0057; color:#ff0057;
+      padding:0.5rem 1.5rem; border-radius:20px; font-weight:bold; cursor:pointer;
+    }
+    nav button.active, nav button:hover { background:#ff0057; color:#fff; }
+
+    main { max-width:1200px; margin:2rem auto; padding:0 1rem; }
+    section {
+      display:none;
+      grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
+      gap:1.5rem; justify-content:center;
+    }
+    section.active { display:grid; }
+    section h2 {
+      grid-column:1/-1; text-align:center; font-family:'Orbitron', sans-serif;
+      color:#ff4fa3; margin-bottom:1rem;
+    }
+
+    .card {
+      background:#1f1f1f; border-radius:15px; overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.6);
+      display:flex; flex-direction:column;
+      transition:transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover { transform:translateY(-6px); box-shadow:0 6px 20px rgba(255,0,87,0.4); }
+    .card img { width:100%; height:150px; object-fit:contain; background:#111; }
+    .card h3 { font-size:1rem; margin:0.5rem 1rem; color:#ff80b0; }
+    .card p { margin:0 1rem; color:#bbb; font-size:0.9rem; flex:1; }
+    .card .price { font-weight:bold; margin:0.8rem 1rem; color:#ff99cc; }
+    .card button {
+      background:#ff0057; color:#fff; border:none; border-radius:20px;
+      padding:0.6rem; margin:0.8rem 1rem 1rem; cursor:pointer;
+    }
+    .card button:disabled { background:#555; cursor:not-allowed; }
+
+    /* --- Carrito --- */
+    #cart {
+      position:fixed; top:0; right:-400px; width:350px; height:100vh;
+      background:#1a1a1a; box-shadow:-4px 0 16px rgba(0,0,0,0.8);
+      padding:1rem; transition:right 0.3s ease; z-index:2000;
+      display:flex; flex-direction:column;
+    }
+    #cart.open { right:0; }
+    #cart header { display:flex; justify-content:space-between; align-items:center;
+      border-bottom:2px solid #ff0057; margin-bottom:1rem; }
+    #cart header h3 { font-family:'Orbitron', sans-serif; color:#ff4fa3; }
+    #cart ul { list-style:none; flex:1; overflow-y:auto; padding:0; }
+    #cart ul li { display:flex; justify-content:space-between; align-items:center;
+      border-bottom:1px solid #333; padding:0.5rem 0; }
+    .qty-controls { display:flex; align-items:center; gap:0.4rem; }
+    .qty-controls button { background:#ff0057; border:none; color:#fff; width:26px; height:26px; border-radius:50%; cursor:pointer; }
+    #cart footer { border-top:2px solid #ff0057; padding-top:0.8rem; }
+    #cart footer p { text-align:right; margin-bottom:0.5rem; color:#ffb3d1; }
+    #cart footer button {
+      width:100%; background:#ff0057; border:none; padding:0.8rem;
+      border-radius:25px; font-weight:bold; cursor:pointer;
+    }
+    #cart-toggle {
+      position:fixed; bottom:20px; right:20px;
+      background:#ff0057; border:none; border-radius:50%;
+      color:#fff; font-size:1.5rem; padding:0.9rem; cursor:pointer;
+      box-shadow:0 3px 12px rgba(255,0,87,0.5); z-index:2100;
+    }
+
+    @media(max-width:768px){
+      section { grid-template-columns:1fr; }
+      .carousel { height:250px; }
+      #cart { width:100%; right:-100%; }
+      #cart.open { right:0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>Venta de Cuentas Streaming y Herramientas</header>
+
+<!-- Carrusel -->
+<div class="carousel">
+  <div class="carousel-track">
+    <img src="https://i.ibb.co/3C3chpW/netflix-banner.jpg" alt="Netflix Promo">
+    <img src="https://i.ibb.co/3hcbnZg/disney-banner.jpg" alt="Disney Plus Promo">
+    <img src="https://i.ibb.co/hfsfGY4/spotify-banner.jpg" alt="Spotify Promo">
+    <img src="https://i.ibb.co/Z2S1Z4V/prime-banner.jpg" alt="Prime Video Promo">
+  </div>
+  <button class="carousel-btn prev">&#10094;</button>
+  <button class="carousel-btn next">&#10095;</button>
+</div>
+
+<nav>
+  <button class="active" data-target="pantallas">Pantallas <i class="fas fa-tv"></i></button>
+  <button data-target="office">Office <i class="fas fa-file-alt"></i></button>
+  <button data-target="herramientas">Herramientas <i class="fas fa-tools"></i></button>
+  <button data-target="plus18">+18 😈</button>
+</nav>
+
+<main>
+  <!-- Pantallas -->
+  <section id="pantallas" class="active">
+    <h2>Pantallas</h2>
+    <div class="card" data-name="Netflix" data-price="13000">
+      <img src="https://i.ibb.co/gy4VbFc/netflix.png"><h3>Pantalla Netflix (29 días)</h3><p>Acceso total 29 días</p><div class="price">$13000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Disney Standar" data-price="10000">
+      <img src="https://i.ibb.co/JyDn8h9/disney.png"><h3>Disney+ Estándar (30 días)</h3><p>Todo el contenido Disney</p><div class="price">$10000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Disney Premium ESPN" data-price="15000">
+      <img src="https://i.ibb.co/JyDn8h9/disney.png"><h3>Disney+ Premium + ESPN (30 días)</h3><p>Incluye ESPN Sports</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Amazon Prime Video" data-price="13000">
+      <img src="https://i.ibb.co/D8jXKNx/prime.png"><h3>Amazon Prime Video (30 días)</h3><p>Series y películas</p><div class="price">$13000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Apple TV+" data-price="15000">
+      <img src="https://i.ibb.co/dmTvdL9/appletv.png"><h3>Apple TV+ (30 días)</h3><p>Incluye MLS en celular/PC</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Gaia" data-price="18000">
+      <img src="https://i.ibb.co/Xtr5d3n/gaia.png"><h3>GAIA (30 días)</h3><p>Moldea tu realidad</p><div class="price">$18000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Crunchyroll" data-price="10000">
+      <img src="https://i.ibb.co/93x7wrm/crunchyroll.png"><h3>Crunchyroll (30 días)</h3><p>Anime ilimitado</p><div class="price">$10000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Paramount+" data-price="10000">
+      <img src="https://i.ibb.co/pQk2sDF/paramount.png"><h3>Paramount+ (30 días)</h3><p>Películas y series</p><div class="price">$10000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="MAX" data-price="10000">
+      <img src="https://i.ibb.co/QKpYbQc/hbomax.png"><h3>MAX (30 días)</h3><p>HBO Max incluido</p><div class="price">$10000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="VIX" data-price="9000">
+      <img src="https://i.ibb.co/5jQHMW4/vix.png"><h3>VIX (30 días)</h3><p>Contenido gratuito premium</p><div class="price">$9000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="PLEX" data-price="10000">
+      <img src="https://i.ibb.co/YyrtnzB/plex.png"><h3>PLEX (30 días)</h3><p>Películas y streaming</p><div class="price">$10000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="IPTV WIN+" data-price="15000">
+      <img src="https://i.ibb.co/vY9k2bV/iptv.png"><h3>IPTV WIN+ (30 días)</h3><p>Usar con excelente internet</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="MagisTV" data-price="15000">
+      <img src="https://i.ibb.co/JctVn0j/magistv.png"><h3>MAGIS TV (30 días)</h3><p>Películas y series</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Tele Latino" data-price="15000">
+      <img src="https://i.ibb.co/W2hjY8M/telelatino.png"><h3>TELE LATINO (30 días)</h3><p>Entretenimiento variado</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+  </section>
+
+  <!-- Office -->
+  <section id="office">
+    <h2>Office</h2>
+    <div class="card" data-name="Office 365 (1 año)" data-price="40000">
+      <img src="https://i.ibb.co/NFtdCMH/office.png"><h3>Office 365 (1 año)</h3><p>Licencia de 1 año</p><div class="price">$40000</div><button class="btn-add">Agregar</button>
+    </div>
+  </section>
+
+  <!-- Herramientas -->
+  <section id="herramientas">
+    <h2>Herramientas</h2>
+    <div class="card" data-name="ChatGPT Plus" data-price="30000">
+      <img src="https://i.ibb.co/YTZ4RjQ/chatgpt.png"><h3>ChatGPT Plus (30 días)</h3><p>IA Avanzada</p><div class="price">$30000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Duolingo Pro" data-price="11000">
+      <img src="https://i.ibb.co/c6X7zJL/duolingo.png"><h3>Duolingo Pro (30 días)</h3><p>Aprende inglés jugando</p><div class="price">$11000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Duolingo Pro 1 año" data-price="38000">
+      <img src="https://i.ibb.co/c6X7zJL/duolingo.png"><h3>Duolingo Pro (1 año)</h3><p>Aprende inglés jugando</p><div class="price">$38000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Canva Pro" data-price="15000">
+      <img src="https://i.ibb.co/zQSKfFm/canva.png"><h3>Canva Pro (30 días)</h3><p>Editor de contenido</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Tidal Premium" data-price="13000">
+      <img src="https://i.ibb.co/WgfttfJ/tidal.png"><h3>Tidal Premium (30 días)</h3><p>Música de alta calidad</p><div class="price">$13000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Deezer Premium" data-price="13000">
+      <img src="https://i.ibb.co/7CQjS6K/deezer.png"><h3>Deezer Premium (30 días)</h3><p>Música ilimitada</p><div class="price">$13000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Spotify Premium" data-price="18000">
+      <img src="https://i.ibb.co/JjS9mXm/spotify.png"><h3>Spotify Premium (30 días)</h3><p>Sin anuncios</p><div class="price">$18000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="YouTube Premium" data-price="18000">
+      <img src="https://i.ibb.co/1LzTG5d/youtube.png"><h3>YouTube Premium (30 días)</h3><p>Videos sin anuncios</p><div class="price">$18000</div><button class="btn-add">Agregar</button>
+    </div>
+  </section>
+
+  <!-- +18 -->
+  <section id="plus18">
+    <h2>+18</h2>
+    <div class="card" data-name="OnlyFans" data-price="0">
+      <img src="https://i.ibb.co/dDSyJj6/onlyfans.png"><h3>OnlyFans 50$ (8 horas)</h3><p>Preguntar existencia</p><div class="price">Consultar</div><button class="btn-add" disabled>No disponible</button>
+    </div>
+    <div class="card" data-name="Pornhub Premium" data-price="15000">
+      <img src="https://i.ibb.co/Ny9tSc2/pornhub.png"><h3>PornHub Premium (30 días)</h3><p>Contenido Premium</p><div class="price">$15000</div><button class="btn-add">Agregar</button>
+    </div>
+    <div class="card" data-name="Hotgo Media" data-price="0">
+      <img src="https://i.ibb.co/LNbw4P1/hotgo.png"><h3>Hotgo Media (30 días)</h3><p>Preguntar existencia</p><div class="price">Consultar</div><button class="btn-add" disabled>No disponible</button>
+    </div>
+  </section>
+</main>
+
+<!-- Carrito -->
+<aside id="cart">
+  <header><h3>Carrito</h3><button id="close-cart">✖</button></header>
+  <ul></ul>
+  <footer><p>Total: <span id="cart-total">$0</span></p><button>Finalizar Compra</button></footer>
+</aside>
+<button id="cart-toggle"><i class="fas fa-shopping-cart"></i></button>
+
+<script>
+  // ---- CARRUSEL ----
+  const track=document.querySelector(".carousel-track");
+  const slides=document.querySelectorAll(".carousel img");
+  const prevBtn=document.querySelector(".carousel-btn.prev");
+  const nextBtn=document.querySelector(".carousel-btn.next");
+  let index=0;
+
+  function showSlide(i){
+    index=(i+slides.length)%slides.length;
+    track.style.transform=`translateX(${-index*100}%)`;
+  }
+  prevBtn.onclick=()=>showSlide(index-1);
+  nextBtn.onclick=()=>showSlide(index+1);
+  setInterval(()=>showSlide(index+1),4000);
+
+  // ---- NAV ----
+  const buttons=document.querySelectorAll("nav button");
+  const sections=document.querySelectorAll("main section");
+  buttons.forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      buttons.forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      const target=btn.dataset.target;
+      sections.forEach(s=>{
+        s.classList.remove("active");
+        if(s.id===target) s.classList.add("active");
+      });
+    });
+  });
+
+  // ---- CARRITO ----
+  const cart=document.getElementById("cart");
+  const cartToggle=document.getElementById("cart-toggle");
+  const closeCart=document.getElementById("close-cart");
+  const cartList=document.querySelector("#cart ul");
+  const cartTotal=document.getElementById("cart-total");
+  let carrito=JSON.parse(localStorage.getItem("carrito"))||{};
+
+  function renderCart(){
+    cartList.innerHTML="";
+    let total=0;
+    Object.values(carrito).forEach(item=>{
+      const li=document.createElement("li");
+      li.innerHTML=`
+        <div><strong>${item.name}</strong><br>$${item.price}</div>
+        <div class="qty-controls">
+          <button class="decrease">-</button>
+          <span>${item.qty}</span>
+          <button class="increase">+</button>
+        </div>`;
+      li.querySelector(".decrease").onclick=()=>{
+        item.qty--;if(item.qty<=0)delete carrito[item.name];
+        saveCart();renderCart();
+      };
+      li.querySelector(".increase").onclick=()=>{item.qty++;saveCart();renderCart();};
+      cartList.appendChild(li);
+      total+=item.price*item.qty;
+    });
+    cartTotal.textContent="$"+total.toLocaleString();
+  }
+  function saveCart(){ localStorage.setItem("carrito",JSON.stringify(carrito)); }
+  document.body.addEventListener("click",e=>{
+    if(e.target.classList.contains("btn-add")){
+      const card=e.target.closest(".card");
+      const name=card.dataset.name;
+      const price=parseInt(card.dataset.price);
+      if(price>0){
+        if(!carrito[name]) carrito[name]={name,price,qty:0};
+        carrito[name].qty++;
+        saveCart();renderCart();
+        cart.classList.add("open");
+      }
+    }
+  });
+  cartToggle.onclick=()=>cart.classList.toggle("open");
+  closeCart.onclick=()=>cart.classList.remove("open");
+  renderCart();
+</script>
+</body>
+</html>
