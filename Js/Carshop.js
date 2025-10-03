@@ -110,14 +110,18 @@ finalizarBtn.addEventListener("click", () => {
     localStorage.setItem("numeroCliente", numeroCliente);
   }
 
-  // Armamos el mensaje
-  let mensaje = `Hola, soy ${nombreCliente}.\nMi número de contacto es: ${numeroCliente}\n\nQuiero realizar la siguiente compra:\n\n`;
-  let total = 0;
-  Object.values(carrito).forEach(item => {
-    mensaje += `- ${item.name} (x${item.qty}) = $${(item.price * item.qty).toLocaleString()}\n`;
+    // Armamos el mensaje
+    let mensaje = `Hola, soy ${nombreCliente}.\nMi número de contacto es: ${numeroCliente}\n\nQuiero realizar la siguiente compra:\n\n`;
+    let total = 0;
+    Object.values(carrito).forEach(item => {
+    // Buscar la tarjeta correspondiente para obtener detalles
+    const card = document.querySelector(`.card[data-name="${item.name}"]`);
+    const detalle = card ? card.querySelector("h3").textContent : item.name;
+
+    mensaje += `- ${detalle} (x${item.qty}) = $${(item.price * item.qty).toLocaleString()}\n`;
     total += item.price * item.qty;
-  });
-  mensaje += `\nTOTAL: $${total.toLocaleString()}`;
+    });
+    mensaje += `\nTOTAL: $${total.toLocaleString()}`;
 
   // Número de WhatsApp del vendedor
   const numero = "573186365553"; // 👈 cámbialo por el tuyo con código de país
