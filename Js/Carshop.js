@@ -1,4 +1,3 @@
-// ---- CARRUSEL ----
 const track = document.querySelector(".carousel-track");
 const slides = document.querySelectorAll(".carousel img");
 const prevBtn = document.querySelector(".carousel-btn.prev");
@@ -13,7 +12,6 @@ prevBtn.onclick = () => showSlide(index - 1);
 nextBtn.onclick = () => showSlide(index + 1);
 setInterval(() => showSlide(index + 1), 4000);
 
-// ---- NAV ----
 const buttons = document.querySelectorAll("nav button");
 const sections = document.querySelectorAll("main section");
 buttons.forEach(btn => {
@@ -28,7 +26,6 @@ buttons.forEach(btn => {
   });
 });
 
-// ---- CARRITO ----
 const cart = document.getElementById("cart");
 const cartToggle = document.getElementById("cart-toggle");
 const closeCart = document.getElementById("close-cart");
@@ -75,22 +72,21 @@ document.body.addEventListener("click", e => {
 });
 
 document.body.addEventListener("click", e => {
-  // Botón de consulta
+
   if (e.target.classList.contains("btn-consultar")) {
     const card = e.target.closest(".card");
     const name = card.dataset.name;
     const descripcion = card.querySelector("h3").textContent;
 
-    // Número de WhatsApp (👈 cámbialo por el tuyo con código de país)
-    const numero = "573102819958";
 
-    // Mensaje que se enviará
+    const numero = "573186365553";
+ 
     const mensaje = `Hola, quiero consultar informacio sobre el producto: ${descripcion} (${name})`;
 
-    // URL de WhatsApp
+
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
 
-    // Redirige a WhatsApp
+
     window.open(url, "_blank");
   }
 });
@@ -99,16 +95,13 @@ document.body.addEventListener("click", e => {
 cartToggle.onclick = () => cart.classList.toggle("open");
 closeCart.onclick = () => cart.classList.remove("open");
 renderCart();
-
-// ---- FINALIZAR COMPRA ----
+ 
 const finalizarBtn = document.getElementById("finalizar-compra");
 const cambiarNombreBtn = document.getElementById("cambiar-nombre");
-
-// Guardar datos del cliente
+ 
 let nombreCliente = localStorage.getItem("nombreCliente") || "";
 let numeroCliente = localStorage.getItem("numeroCliente") || "";
-
-// Evento finalizar compra
+ 
 finalizarBtn.addEventListener("click", () => {
   if (Object.keys(carrito).length === 0) {
     alert("Tu carrito está vacío.");
@@ -132,12 +125,11 @@ finalizarBtn.addEventListener("click", () => {
     }
     localStorage.setItem("numeroCliente", numeroCliente);
   }
-
-    // Armamos el mensaje
+ 
     let mensaje = `Hola, Soy ${nombreCliente}.\nMi número de contacto es: ${numeroCliente}\n\nQuiero realizar la siguiente compra:\n\n`;
     let total = 0;
     Object.values(carrito).forEach(item => {
-    // Buscar la tarjeta correspondiente para obtener detalles
+      
     const card = document.querySelector(`.card[data-name="${item.name}"]`);
     const detalle = card ? card.querySelector("h3").textContent : item.name;
 
@@ -146,20 +138,16 @@ finalizarBtn.addEventListener("click", () => {
     });
     mensaje += `\nTOTAL: $${total.toLocaleString()}`;
 
-  // Número de WhatsApp del vendedor
-  const numero = "573102819958"; // 👈 cámbialo por el tuyo con código de país
+  const numero = "573186365553"; 
   const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-
-  // Redirigir a WhatsApp en la misma pestaña
+ 
   window.location.href = url;
-
-  // Vaciar carrito después de la compra
+ 
   carrito = {};
   saveCart();
   renderCart();
 });
-
-// Evento cambiar nombre
+ 
 cambiarNombreBtn.addEventListener("click", () => {
   const nuevoNombre = prompt("Ingresa tu nombre:");
   if (nuevoNombre) {
@@ -176,3 +164,26 @@ cambiarNombreBtn.addEventListener("click", () => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const boton = document.getElementById('cart-toggle');
+  const footer = document.querySelector('footer');
+  if (!boton || !footer) return;
+  
+  const options = { threshold: 0, root: null, rootMargin: '0px 0px -80px 0px' };
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Footer está en la zona: ocultar botón
+        boton.classList.add('hide-on-footer');
+        boton.setAttribute('aria-hidden', 'true');
+      } else {
+        // Footer fuera de la zona: mostrar botón
+        boton.classList.remove('hide-on-footer');
+        boton.removeAttribute('aria-hidden');
+      }
+    });
+  }, options);
+
+  io.observe(footer);
+});
