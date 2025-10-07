@@ -7,11 +7,25 @@
     }
 
     header {
-      background:linear-gradient(90deg, #4e00c2, #ff0057);
-      color:#fff; font-family:'Orbitron', sans-serif;
-      font-size:1.8rem; text-align:center; padding:1rem;
-      position:sticky; top:0; z-index:1000;
-      box-shadow:0 2px 8px rgba(0,0,0,0.6);
+      background: linear-gradient(90deg, #4e00c2, #ff0057, #4e00c2);
+      background-size: 300% 300%;
+      animation: headerGradient 8s ease infinite;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      text-align: center;
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Animación del gradiente (misma que el footer) */
+    @keyframes headerGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* --- Carrusel Full Width --- */
@@ -84,21 +98,70 @@
     .carousel-btn.next { 
       right: 40px; 
     }
-
-
+ 
     nav {
-      background:#1a1a1a; display:flex; justify-content:center; gap:1rem;
-      flex-wrap:wrap; padding:0.8rem; border-bottom:2px solid #ff0057;
-      position:sticky; top:64px; z-index:999;
+      background: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0.8rem;
+      border-bottom: 2px solid #ff0057;
+      position: sticky;
+      top: 64px;
+      z-index: 999;
     }
 
+    /* --- Botones con efecto neón --- */
     nav button {
-      background:transparent; border:2px solid #ff0057; color:#ff0057;
-      padding:0.5rem 1.5rem; border-radius:20px; font-weight:bold; cursor:pointer;
+      position: relative;
+      overflow: hidden;
+      background: #1a1a1a;
+      border: 2px solid #ff0057;
+      color: #ff80b0;
+      padding: 0.6rem 1.8rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 8px rgba(255, 0, 87, 0.3);
     }
 
-    nav button.active, nav button:hover { 
-      background:#ff0057; color:#fff; 
+    /* Brillo en hover */
+    nav button::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 300%;
+      background: linear-gradient(120deg, transparent, rgba(255, 0, 87, 0.3), transparent);
+      transform: translateY(0);
+      transition: transform 0.4s ease;
+      opacity: 0;
+    }
+
+    nav button:hover::before {
+      transform: translateY(-33%);
+      opacity: 1;
+    }
+
+    nav button:hover {
+      background: linear-gradient(90deg, #4e00c2, #ff0057);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 0 15px rgba(255, 0, 87, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Estado activo */
+    nav button.active {
+      background: linear-gradient(90deg, #4e00c2, #ff0057);
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 20px rgba(255, 0, 87, 0.7);
     }
 
     main { 
@@ -240,6 +303,97 @@
       background:#ff0057; border:none; border-radius:50%;
       color:#fff; font-size:1.5rem; padding:0.9rem; cursor:pointer;
       box-shadow:0 3px 12px rgba(255,0,87,0.5); z-index:2100;
+    }
+
+        /* ===== Footer ===== */
+    footer {
+      background: linear-gradient(90deg, #4e00c2, #ff0057, #4e00c2);
+      background-size: 300% 300%;
+      animation: footerGradient 8s ease infinite;
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-family: 'Orbitron', sans-serif;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.6);
+      margin-top: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes footerGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .footer-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-content p {
+      font-family: 'Roboto', sans-serif;
+      color: #f1f1f1;
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-bottom: 2px solid transparent;
+      transition: 0.4s;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+    }
+
+    .footer-links a:hover {
+      border-bottom: 2px solid #fff;
+      color: #ffe6f0;
+      text-shadow: 0 0 10px #fff, 0 0 20px #ff80c0;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: #eee;
+      opacity: 0.8;
+    }
+
+    /* Pequeña animación de brillo en el texto principal */
+    @keyframes neonPulse {
+      0%, 100% { text-shadow: 0 0 8px #fff, 0 0 12px #ff80c0; }
+      50% { text-shadow: 0 0 16px #fff, 0 0 30px #ff80c0; }
+    }
+
+    footer h3 {
+      animation: neonPulse 3s infinite alternate;
+    }
+
+    .footer-notice {
+      font-size: 0.85rem;
+      color: #f0c0ff; /* tono suave que combina con el gradiente */
+      margin: 1rem 0;
+      line-height: 1.4;
+      font-family: 'Roboto', sans-serif;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
     }
 
     @media(max-width:768px){

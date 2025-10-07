@@ -42,7 +42,7 @@ function renderCart() {
   Object.values(carrito).forEach(item => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <div><strong>${item.name}</strong><br>$${item.price}</div>
+      <div><strong>${item.name}</strong><br>$${item.price.toLocaleString('es-ES')}</div>
       <div class="qty-controls">
         <button class="decrease">-</button>
         <span>${item.qty}</span>
@@ -56,7 +56,7 @@ function renderCart() {
     cartList.appendChild(li);
     total += item.price * item.qty;
   });
-  cartTotal.textContent = "$" + total.toLocaleString();
+  cartTotal.textContent = "$" + total.toLocaleString('es-ES');
 }
 function saveCart() { localStorage.setItem("carrito", JSON.stringify(carrito)); }
 
@@ -73,6 +73,29 @@ document.body.addEventListener("click", e => {
     }
   }
 });
+
+document.body.addEventListener("click", e => {
+  // Botón de consulta
+  if (e.target.classList.contains("btn-consultar")) {
+    const card = e.target.closest(".card");
+    const name = card.dataset.name;
+    const descripcion = card.querySelector("h3").textContent;
+
+    // Número de WhatsApp (👈 cámbialo por el tuyo con código de país)
+    const numero = "573102819958";
+
+    // Mensaje que se enviará
+    const mensaje = `Hola, quiero consultar informacio sobre el producto: ${descripcion} (${name})`;
+
+    // URL de WhatsApp
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+
+    // Redirige a WhatsApp
+    window.open(url, "_blank");
+  }
+});
+
+
 cartToggle.onclick = () => cart.classList.toggle("open");
 closeCart.onclick = () => cart.classList.remove("open");
 renderCart();
@@ -111,7 +134,7 @@ finalizarBtn.addEventListener("click", () => {
   }
 
     // Armamos el mensaje
-    let mensaje = `Hola, soy ${nombreCliente}.\nMi número de contacto es: ${numeroCliente}\n\nQuiero realizar la siguiente compra:\n\n`;
+    let mensaje = `Hola, Soy ${nombreCliente}.\nMi número de contacto es: ${numeroCliente}\n\nQuiero realizar la siguiente compra:\n\n`;
     let total = 0;
     Object.values(carrito).forEach(item => {
     // Buscar la tarjeta correspondiente para obtener detalles
@@ -124,7 +147,7 @@ finalizarBtn.addEventListener("click", () => {
     mensaje += `\nTOTAL: $${total.toLocaleString()}`;
 
   // Número de WhatsApp del vendedor
-  const numero = "573186365553"; // 👈 cámbialo por el tuyo con código de país
+  const numero = "573102819958"; // 👈 cámbialo por el tuyo con código de país
   const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
 
   // Redirigir a WhatsApp en la misma pestaña
