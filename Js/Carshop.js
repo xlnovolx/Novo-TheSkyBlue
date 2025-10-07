@@ -165,25 +165,161 @@ cambiarNombreBtn.addEventListener("click", () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const boton = document.getElementById('cart-toggle');
-  const footer = document.querySelector('footer');
-  if (!boton || !footer) return;
+  const botonCarrito = document.getElementById('cart-toggle');
+  const botonWhatsApp = document.getElementById('wa-toggle');
+  const elementosOcultar = document.querySelectorAll('.ocultar');
+  const cart = document.getElementById("cart"); 
   
-  const options = { threshold: 0, root: null, rootMargin: '0px 0px -80px 0px' };
+  let carritoAbierto = false;
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Footer está en la zona: ocultar botón
-        boton.classList.add('hide-on-footer');
-        boton.setAttribute('aria-hidden', 'true');
+  if (!botonCarrito && !botonWhatsApp && elementosOcultar.length === 0) return;
+
+  function manejarVisibilidad() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    const estaEnFooter = (scrollTop + windowHeight) >= (documentHeight - 200);
+    
+    if (botonCarrito) {
+      if (estaEnFooter || carritoAbierto) {
+        botonCarrito.classList.add('hide-on-footer');
+        botonCarrito.setAttribute('aria-hidden', 'true');
       } else {
-        // Footer fuera de la zona: mostrar botón
-        boton.classList.remove('hide-on-footer');
-        boton.removeAttribute('aria-hidden');
+        botonCarrito.classList.remove('hide-on-footer');
+        botonCarrito.removeAttribute('aria-hidden');
       }
-    });
-  }, options);
+    }
+    
+    if (estaEnFooter) {
+      if (botonWhatsApp) {
+        botonWhatsApp.classList.add('hide-on-footer');
+        botonWhatsApp.setAttribute('aria-hidden', 'true');
+      }
+      
+      elementosOcultar.forEach(elemento => {
+        elemento.style.opacity = '0';
+        elemento.style.pointerEvents = 'none';
+      });
+    } else {
+      if (botonWhatsApp) {
+        botonWhatsApp.classList.remove('hide-on-footer');
+        botonWhatsApp.removeAttribute('aria-hidden');
+      }
+      
+      elementosOcultar.forEach(elemento => {
+        elemento.style.opacity = '1';
+        elemento.style.pointerEvents = 'auto';
+      });
+    }
+  }
 
-  io.observe(footer);
+  function abrirCarrito() {
+    carritoAbierto = true;
+    
+    if (cart) {
+      cart.classList.add("open");
+    }
+    
+    manejarVisibilidad();
+  }
+
+  function cerrarCarrito() {
+    carritoAbierto = false;
+    
+    if (cart) {
+      cart.classList.remove("open");
+    }
+    
+    manejarVisibilidad();
+  }
+
+  function enviarMensajeSoporte() {
+    const numero = "573186365553";
+    const mensaje = "Hola, tengo una consulta sobre:\n• Precios y cotizaciones\n• Disponibilidad de productos\n• Soporte técnico\n• Otros\n\n¿Me podrían ayudar por favor?";
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+    
+    window.open(url, "_blank");
+  }
+
+  function configurarBotonWhatsApp() {
+    if (botonWhatsApp) {
+      
+      botonWhatsApp.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        enviarMensajeSoporte();
+      });
+    }
+  }
+
+  function sincronizarEstadoCarrito() {
+    const estaAbierto = cart && cart.classList.contains("open");
+    
+    if (estaAbierto !== carritoAbierto) {
+      carritoAbierto = estaAbierto;
+      manejarVisibilidad();
+    }
+  }
+
+  function configurarBotonCerrar() {
+    const botonCerrar = document.getElementById('close-cart');
+    
+    if (botonCerrar) {
+      
+      botonCerrar.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        cerrarCarrito();
+      });
+      
+    } else {
+    }
+  }
+
+  function iniciarObservador() {
+    if (cart) {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            setTimeout(sincronizarEstadoCarrito, 50);
+          }
+        });
+      });
+      
+      observer.observe(cart, { 
+        attributes: true,
+        attributeFilter: ['class']
+      });
+      
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && carritoAbierto) {
+      cerrarCarrito();
+    }
+  });
+
+  window.addEventListener('scroll', manejarVisibilidad);
+  
+  setTimeout(configurarBotonCerrar, 100);
+  setTimeout(configurarBotonCerrar, 500);
+  setTimeout(configurarBotonWhatsApp, 100);
+  
+  setTimeout(iniciarObservador, 100);
+  
+  setTimeout(sincronizarEstadoCarrito, 200);
+  
+  manejarVisibilidad();
+
+  window.controladorCarrito = {
+    abrirCarrito: abrirCarrito,
+    cerrarCarrito: cerrarCarrito,
+    manejarVisibilidad: manejarVisibilidad,
+    getEstado: () => carritoAbierto,
+    sincronizarEstadoCarrito: sincronizarEstadoCarrito,
+    enviarMensajeSoporte: enviarMensajeSoporte
+  };
+  
 });

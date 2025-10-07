@@ -443,6 +443,30 @@
     /* Accesibilidad: foco */
     .floating-btn:focus { outline: 3px solid rgba(255,255,255,0.12); }
 
+    #close-cart {
+      background: none;      /* Sin fondo */
+      border: none;          /* Sin borde */
+      padding: 0;            /* Sin espaciado */
+      margin: 0;
+      cursor: pointer;       /* Cursor tipo mano */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #close-cart img {
+      display: block;
+      width: 18px;           /* Puedes ajustar el tamaño */
+      height: 18px;
+      filter: invert(1);     /* Si quieres que la X sea blanca (útil en fondos oscuros) */
+      transition: transform 0.2s ease;
+    }
+
+    #close-cart:hover img {
+      transform: scale(1.2); /* Efecto al pasar el mouse */
+    }
+
+
     /* Responsive: en pantallas muy pequeñas opcionalmente ocultamos el WA para no saturar */
     @media (max-width: 420px) {
       /* Si prefieres mostrar ambos, elimina esta regla */
