@@ -396,6 +396,61 @@
       text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
     }
 
+        /* Estilos base para ambos botones flotantes */
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;              /* misma altura para ambos */
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+      z-index: 2200;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, visibility 0.18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Iconos/imagenes dentro del botón */
+    .floating-btn .btn-icon,
+    .floating-btn i {
+      display: block;
+      width: 28px;
+      height: 28px;
+      font-size: 22px;
+      color: #fff;
+      object-fit: contain;
+    }
+
+    /* Posición individual */
+    #cart-toggle { right: 20px; background: #ff0057; }
+    #wa-toggle   { left: 20px;  background: #25D366; } /* color WhatsApp */
+
+    /* Sombra/hover */
+    .floating-btn:hover { transform: translateY(-4px) scale(1.03); }
+
+    /* Clase que aplicaremos para "desaparecer" cuando el footer esté en la zona */
+    .hide-on-footer {
+      opacity: 0;
+      transform: translateY(10px) scale(.95);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    /* Accesibilidad: foco */
+    .floating-btn:focus { outline: 3px solid rgba(255,255,255,0.12); }
+
+    /* Responsive: en pantallas muy pequeñas opcionalmente ocultamos el WA para no saturar */
+    @media (max-width: 420px) {
+      /* Si prefieres mostrar ambos, elimina esta regla */
+      #wa-toggle { display: none; }
+      .floating-btn { width:48px; height:48px; }
+    }
+
+
     @media(max-width:768px){
       section { grid-template-columns:1fr; }
       .carousel { height:250px; }

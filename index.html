@@ -158,7 +158,22 @@
 </aside>
 
 
-<button id="cart-toggle"><i class="fas fa-shopping-cart"></i></button>
+<!-- Botón Soporte WhatsApp (izquierda) -->
+<button id="wa-toggle" class="floating-btn wa" aria-label="Soporte WhatsApp" title="Soporte por WhatsApp">
+
+  <img src="Img/whatsapp.png" alt="WhatsApp" class="btn-icon"> 
+
+</button>
+
+<!-- Botón Carrito (derecha) -->
+<button id="cart-toggle" class="floating-btn cart" aria-label="Abrir carrito" title="Abrir carrito">
+  <!-- Opción A: usar imagen personalizada -->
+  <img src="Img/carrito-de-compras.png" alt="Carrito" class="btn-icon">
+
+  <!-- Opción B alternativa (si no tienes imagen): usar FontAwesome
+  <i class="fas fa-shopping-cart"></i> -->
+</button>
+
 
 <script src="Js/Carshop.js"></script>
 
@@ -170,12 +185,6 @@
     <p class="footer-notice">
       Todos los productos digitales ofrecidos por NovoShop y SkyBlue están sujetos a un tiempo de vigencia. Su uso no es permanente y requiere renovación al concluir el periodo contratado.
     </p>
-
-    <!-- <ul class="footer-links">
-      <li><a href="#">Términos y condiciones</a></li>
-      <li><a href="#">Política de privacidad</a></li>
-      <li><a href="#">Contacto</a></li>
-    </ul> -->
 
     <p class="footer-copy">© 2025 NovoShop - Todos los derechos reservados</p>
   </div>
